@@ -1,6 +1,6 @@
 # deep-learning-jhu-cs-482-682
 
-## Names
+## Eric Carlson, Alex Bocchieri, Annapurna Vadaparty
 
 # Answers
 
