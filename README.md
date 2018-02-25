@@ -65,11 +65,18 @@ A CPU only 10 epoch run should take about 5 minutes on a 4 year old laptop. Much
 
 Install [miniconda](https://conda.io/docs/user-guide/install/index.html), a python package manager.
 
-
-Install [pytorch](http://pytorch.org/):
+Make sure miniconda is on your path, you may want to add the following to your `~/.bashrc` file:
 
 ```
-conda create -q -n dl-jhu-env python=3.6 pip numpy chainer torchvision tqdm pytorch-cpu torchvision -c pytorch
+export PATH=~/miniconda3/bin:$PATH
+```
+
+Install [pytorch](http://pytorch.org/), you can see pytorch website for more detailed instructions:
+
+```
+conda create -q -n dl-jhu-env python=3.6 pip numpy chainer torchvision tqdm
+source activate dl-jhu-env
+conda install pytorch-cpu torchvision -c pytorch
 ```
 
 If you have a GPU you'd like to use installation would be different for every machine so, unfortunately, we can only provide support for CPU considering we have such a large class.
@@ -78,7 +85,6 @@ If you have a GPU you'd like to use installation would be different for every ma
 Install the visualization tools:
 
 ```bash
-source activate dl-jhu-env
 which python # note that your python has changed
 conda list
 pip install --upgrade pytest flake8 tensorflow-tensorboard tensorboardX onnx
@@ -141,20 +147,37 @@ If you are on mac and you encounter protobuf errors, make sure you have [homebre
 brew install protobuf
 ```
 
+#### JHU Ugrad machine specific errors
+
+If you see something like:
+```
+conda: Command not found
+```
+
+The ugrad machines seem to default to `tcsh`, so the install steps might not work. To check your shell run:
+
+```
+echo $SHELL
+```
+If the file path it prints doesn't have `bash` (an incorect shell example is `tcsh`), then simply run the following to start bash:
+```
+bash
+```
+
 ### Steps to run
 
 
 Train the provided model on mnist
 
 ```
-python p02_mnist_fashion.py --dataset mnist --epochs 10
+python p02_fashion_mnist.py --dataset mnist --epochs 10
 ```
 
 Train the default model on Fashion-MNIST
 
 
 ```
-python p02_mnist_fashion.py --dataset fashion_mnist --epochs 10
+python p02_fashion_mnist.py --dataset fashion_mnist --epochs 10
 ```
 
 Look at the results on tensorboard:

@@ -140,7 +140,6 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        self.conv2_drop = nn.Dropout2d()
         self.fc1 = nn.Linear(320, 50)
         self.fc2 = nn.Linear(50, 10)
 
@@ -148,7 +147,7 @@ class Net(nn.Module):
         # F is just a functional wrapper for modules from the nn package
         # see http://pytorch.org/docs/_modules/torch/nn/functional.html
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = F.relu(F.max_pool2d(self.conv2(x), 2))
         x = x.view(-1, 320)
         x = F.relu(self.fc1(x))
         x = F.dropout(x, training=self.training)
@@ -387,7 +386,7 @@ def run_experiment(args):
     callbacklist.on_train_end()
     tensorboard_writer.close()
 
-    if val_acc > 0.92 and val_acc <= 1.0:
+    if args.dataset == 'fashion_mnist' and val_acc > 0.92 and val_acc <= 1.0:
         print("Congratulations, you beat the Question 13 minimum of 92 with ({:.2f}%) validation accuracy!".format(val_acc))
 
 if __name__ == '__main__':
