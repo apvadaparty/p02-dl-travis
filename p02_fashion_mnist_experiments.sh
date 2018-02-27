@@ -16,6 +16,11 @@ python p02_fashion_mnist.py --dataset fashion_mnist --epochs 20 --name q1_20_epo
 python p02_fashion_mnist.py --dataset fashion_mnist --lr 0.1 --name q2_20_epochs --data_dir ../data/q2
 python p02_fashion_mnist.py --dataset fashion_mnist --lr 0.001 --name q2_20_epochs --data_dir ../data/q2
 
+# Question 4
+python p02_fashion_mnist.py --dataset fashion_mnist --optimizer adam --name q4_adam --data_dir ../data/q4
+python p02_fashion_mnist.py --dataset fashion_mnist --optimizer rmsprop --name q4_rmsprop --data_dir ../data/q4
+
+
 # ...and so on, hopefully you have the idea now.
 
 # TODO You should fill this file out the rest of the way!

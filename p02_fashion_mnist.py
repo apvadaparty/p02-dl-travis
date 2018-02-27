@@ -96,7 +96,7 @@ def prepareDatasetAndLogging(args):
         dataset_dir, train=False, transform=transforms.Compose([
                         transforms.ToTensor(),
                         transforms.Normalize((0.1307,), (0.3081,))
-                    ]))
+                     ]))
     test_loader = torch.utils.data.DataLoader(
         test_dataset, batch_size=args.test_batch_size, shuffle=True, **kwargs)
 
@@ -393,4 +393,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # Run the primary training and validation loop
     run_experiment(args)
-
