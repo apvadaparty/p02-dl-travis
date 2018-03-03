@@ -24,6 +24,8 @@ import callbacks
 parser = argparse.ArgumentParser(description='Deep Learning JHU Assignment 1 - Fashion-MNIST')
 parser.add_argument('--batch-size', type=int, default=256, metavar='B',
                     help='input batch size for training (default: 64)')
+parser.add_argument('--dropout-rate', type=float, default=50, metavar='DR',
+                    help='Dropout rate (probability) (default: 50)')
 parser.add_argument('--test-batch-size', type=int, default=1000, metavar='TB',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--epochs', type=int, default=10, metavar='E',
@@ -136,12 +138,13 @@ def prepareDatasetAndLogging(args):
 
 
 class Net(nn.Module):
-    def __init__(self):
+    def __init__(self, droprate=0.5):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
         self.fc1 = nn.Linear(320, 50)
         self.fc2 = nn.Linear(50, 10)
+        self.droprate = droprate
 
     def forward(self, x):
         # F is just a functional wrapper for modules from the nn package
@@ -150,7 +153,7 @@ class Net(nn.Module):
         x = F.relu(F.max_pool2d(self.conv2(x), 2))
         x = x.view(-1, 320)
         x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
+        x = F.dropout(x, p=self.droprate, training=self.training)
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
@@ -243,10 +246,10 @@ class P2Q13UltimateNet(nn.Module):
         raise NotImplementedError
 
 
-def chooseModel(model_name='default', cuda=True):
+def chooseModel(model_name='default', droprate=0.5, cuda=True):
     # TODO add all the other models here if their parameter is specified
     if model_name == 'default' or model_name == 'P2Q7DefaultChannelsNet':
-        model = Net()
+        model = Net(droprate=droprate)
     elif model_name in globals():
         model = globals()[model_name]
     else:
