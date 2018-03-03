@@ -30,10 +30,18 @@ python p02_fashion_mnist.py --dataset fashion_mnist --name q5_dr100 --dropout-ra
 python p02_fashion_mnist.py --dataset fashion_mnist --name q6_bs_0.125 --batch-size 32 --data_dir ../data/q6
 python p02_fashion_mnist.py --dataset fashion_mnist --name q6_bs_8 --batch-size 2048 --data_dir ../data/q6
 
+#Question 7
+python p02_fashion_mnist.py --dataset fashion_mnist --name q7_P2Q7HalfChannelsNet --model P2Q7HalfChannelsNet --data_dir ../data/q7
+python p02_fashion_mnist.py --dataset fashion_mnist --name q7_P2Q7DoubleChannelsNet --model P2Q7DoubleChannelsNet --data_dir ../data/q7
+
+#Question 8
+python p02_fashion_mnist.py --dataset fashion_mnist --name q8_P2Q8BatchNormNet --model P2Q8BatchNormNet --data_dir ../data/q8
+
+#Question 9
+python p02_fashion_mnist.py --dataset fashion_mnist --name q9_P2Q9DropoutNet --model P2Q9DropoutNet --data_dir ../data/q9
+
+#Question 10
+python p02_fashion_mnist.py --dataset fashion_mnist --name q10_P2Q10DropoutBatchnormNet --model P2Q10DropoutBatchnormNet --data_dir ../data/q10
 
 #Question 11
 python p02_fashion_mnist.py --dataset fashion_mnist --name q11_extraconv --batch-size 256 --data_dir ../data/q11 --model P2Q11ExtraConvNet
-
-# ...and so on, hopefully you have the idea now.
-
-# TODO You should fill this file out the rest of the way!
