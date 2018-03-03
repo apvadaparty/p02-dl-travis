@@ -31,7 +31,8 @@ python p02_fashion_mnist.py --dataset fashion_mnist --name q6_bs_0.125 --batch-s
 python p02_fashion_mnist.py --dataset fashion_mnist --name q6_bs_8 --batch-size 2048 --data_dir ../data/q6
 
 
-
+#Question 11
+python p02_fashion_mnist.py --dataset fashion_mnist --name q11_extraconv --batch-size 256 --data_dir ../data/q11 --model P2Q11ExtraConvNet
 
 # ...and so on, hopefully you have the idea now.
 
