@@ -26,4 +26,10 @@
 
 The accuracy for 10 is lower than for 9 because in 10, some weights are being zeroed first. This means that in 10, it is normalizing on an artificially zeroed set of weights, so the new weights will be neither 0 nor what is calculated from the data, but instead a non-meaningful value in between. Then these non-meaningful weights will be used for the next pass through the network, and will not be as helpful for classification. In 9, the dropout is done after normalization. This means that some weights are zero after normalization, but the ones that remain are those that have been calculated from the data (not normalized with zeros). This explains why the accuracy is higher for 9. 
 
+11. Hyperparameter change: an extra convolutional layer was added with 80 input channels and 40 output channels; the layer before was modified to fit these dimensions by taking 20 input channels and giving 80 output channels. 
+
+12. Hyperparameter change: The last fully connected layer was removed.
+
+We removed this layer because the goal of a fully connected layer after a convolution is to capture nonlinear patterns in data after it has gone through the convolutional layer, and it was unclear whether the second layer was finding any additional helpful patterns to increase accuracy. The deletion was made in order to speed up the network if the second layer was not helpful. 
+
 
