@@ -300,23 +300,29 @@ class P2Q12RemoveLayerNet(nn.Module):
 class P2Q13UltimateNet(nn.Module):
     def __init__(self):
         super(P2Q13UltimateNet, self).__init__()
-        self.conv1 = nn.Conv2d(1, 16, kernel_size=3)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=5)
-        self.bn = nn.BatchNorm2d(32)
-        self.conv3 = nn.Conv2d(32, 48, kernel_size=5)
-        self.fc1 = nn.Linear(432, 50)
-        self.fc2 = nn.Linear(50, 10)
+        num_filt = 48
+        num_filt2 = num_filt * 2
+        self.conv1 = torch.nn.Conv2d(1, num_filt, kernel_size=3, stride=1)
+        self.maxp1 = torch.nn.MaxPool2d((2,2), stride=(2,2))
+        self.conv2 = torch.nn.Conv2d(num_filt, num_filt2, kernel_size=3, stride=1)
+        self.conv3 = torch.nn.Conv2d(num_filt2, num_filt2, kernel_size=3, stride=1)
+        self.conv4 = torch.nn.Conv2d(num_filt2, num_filt2, kernel_size=3, stride=1)
+        self.drop4 = torch.nn.Dropout2d()
+        self.final_linear = torch.nn.Linear(num_filt2, 10)
 
     def forward(self, x):
+        x = x.view(-1, HEIGHT, WIDTH).unsqueeze(1)
         x = F.relu(self.conv1(x))
-        x = F.relu(F.max_pool2d(self.conv2(x), 3))
-        x = self.bn(x)
+        x = F.relu(self.maxp1(x))
+        x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
-        x = x.view(-1, 432)
-        x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = F.relu(self.fc2(x))
-        return F.log_softmax(x, dim=1)
+        x = F.relu(self.conv4(x))
+        x = F.relu(self.drop4(x))
+        n, c, h, w = x.size()
+        x = F.avg_pool2d(x, kernel_size=[h, w])
+        x = x.view(x.size()[0],-1)
+        x = self.final_linear(x).view(-1, 10) 
+        return x
 
 
 def chooseModel(model_name='default', droprate=0.5, cuda=True):
