@@ -311,7 +311,7 @@ class P2Q13UltimateNet(nn.Module):
         self.final_linear = torch.nn.Linear(num_filt2, 10)
 
     def forward(self, x):
-        x = x.view(-1, HEIGHT, WIDTH).unsqueeze(1)
+        x = x.view(-1, 28, 28).unsqueeze(1)
         x = F.relu(self.conv1(x))
         x = F.relu(self.maxp1(x))
         x = F.relu(self.conv2(x))
