@@ -1,5 +1,5 @@
 # deep-learning-jhu-cs-482-682
-
+#Fashion MNIST
 ## Eric Carlson, Alex Bocchieri, Annapurna Vadaparty
 
 # Answers
