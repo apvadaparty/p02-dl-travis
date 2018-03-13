@@ -50,7 +50,7 @@ set -x
 # python p02_fashion_mnist.py --dataset fashion_mnist --name q12_rmlayer --data_dir ../data/fashion_mnist --model P2Q12RemoveLayerNet
 
 #Question 13
-python p02_fashion_mnist.py --dataset fashion_mnist --name q13 --data_dir ../data/fashion_mnist --model P2Q13UltimateNet --batch-size 32 --epochs 10 --optimizer adam
+python p02_fashion_mnist.py --dataset fashion_mnist --name q13 --data_dir ../data/fashion_mnist --model P2Q13UltimateNet --batch-size 128 --epochs 10 --optimizer adam
 
 
 # #Question 15
