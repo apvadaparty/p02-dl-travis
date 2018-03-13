@@ -50,9 +50,8 @@ python p02_fashion_mnist.py --dataset fashion_mnist --name q11_extraconv --data_
 python p02_fashion_mnist.py --dataset fashion_mnist --name q12_rmlayer --data_dir ../data/fashion_mnist --model P2Q12RemoveLayerNet
 
 #Question 13
-python p02_fashion_mnist.py --dataset fashion_mnist --name q13_ultimateNetgm --data_dir ../data/fashion_mnist --model P2Q13UltimateNet
+#python p02_fashion_mnist.py --dataset fashion_mnist --name q13_ultimateNetgm --data_dir ../data/fashion_mnist --model P2Q13UltimateNet
 
 
 #Question 15
-python p02_fashion_mnist.py --dataset mnist --name q15_lr20x_mnist --data_dir ../data --model P2Q13UltimateNet --lr 0.0005
-
+#python p02_fashion_mnist.py --dataset mnist --name q15_lr20x_mnist --data_dir ../data --model P2Q13UltimateNet --lr 0.0005

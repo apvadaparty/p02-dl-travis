@@ -1,7 +1,6 @@
 language: python
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
-  - "2.7"
   - "3.6"
 
 install:
@@ -33,5 +32,5 @@ install:
 before_script:
   # - py.test --pep8 -m pep8 -n0;
 script:
+  - sh p02_fashion_mnist_experiments.sh
   - py.test p02_fashion_mnist_tests.py
-  - python p02_fashion_mnist.py --dataset fashion_mnist --name q13_test --model P2Q13UltimateNet

@@ -102,4 +102,5 @@ ENV/
 
 
 fashion_mnist/
+mnist/
 
