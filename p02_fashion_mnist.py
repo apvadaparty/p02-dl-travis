@@ -58,7 +58,11 @@ parser.add_argument('--model', type=str, default='default', metavar='M',
 parser.add_argument('--print_log', action='store_true', default=False,
                     help='prints the csv log when training is complete')
 
+parser.add_argument('--load_model', type=str, default='', metavar='N',
+                    help="""A path to a serialized torch model""")
+
 required = object()
+args = None
 
 
 def timeStamped(fname, fmt='%Y-%m-%d-%H-%M-%S_{fname}'):
@@ -262,7 +266,7 @@ class P2Q11ExtraConvNet(nn.Module):
         self.conv1 = nn.Conv2d(1, 20, kernel_size=5)
         self.bn = nn.BatchNorm2d(20)
         self.conv2 = nn.Conv2d(20, 80, kernel_size=5)
-        self.conv3 = nn.Conv2d(80, 40, kernel_size=2)#only thing different 
+        self.conv3 = nn.Conv2d(80, 40, kernel_size=2)#only thing different
         self.fc1 = nn.Linear(40, 20)
         self.fc2 = nn.Linear(20, 10)
 
@@ -300,29 +304,48 @@ class P2Q12RemoveLayerNet(nn.Module):
 class P2Q13UltimateNet(nn.Module):
     def __init__(self):
         super(P2Q13UltimateNet, self).__init__()
-        num_filt = 48
-        num_filt2 = num_filt * 2
-        self.conv1 = torch.nn.Conv2d(1, num_filt, kernel_size=3, stride=1)
-        self.maxp1 = torch.nn.MaxPool2d((2,2), stride=(2,2))
-        self.conv2 = torch.nn.Conv2d(num_filt, num_filt2, kernel_size=3, stride=1)
-        self.conv3 = torch.nn.Conv2d(num_filt2, num_filt2, kernel_size=3, stride=1)
-        self.conv4 = torch.nn.Conv2d(num_filt2, num_filt2, kernel_size=3, stride=1)
-        self.drop4 = torch.nn.Dropout2d()
-        self.final_linear = torch.nn.Linear(num_filt2, 10)
+        self.conv32_1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+        self.conv32_2 = nn.Conv2d(32, 32, kernel_size=3)
+        self.bn32 = nn.BatchNorm2d(32)
+        self.conv64_1 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv64_2 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
+        #self.conv64_3 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
+        self.bn64 = nn.BatchNorm2d(64)
+        self.conv128_1 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.conv128_2 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
+        self.bn128 = nn.BatchNorm2d(128)
+        self.fc1 = nn.Linear(4608, 512)
+        self.bnfc1 = nn.BatchNorm2d(512)
+        self.fc2 = nn.Linear(512, 512)
+        self.bnfc2 = nn.BatchNorm2d(512)
+        self.fc3 = nn.Linear(512, 10)
+
 
     def forward(self, x):
-        x = x.view(-1, 28, 28).unsqueeze(1)
-        x = F.relu(self.conv1(x))
-        x = F.relu(self.maxp1(x))
-        x = F.relu(self.conv2(x))
-        x = F.relu(self.conv3(x))
-        x = F.relu(self.conv4(x))
-        x = F.relu(self.drop4(x))
-        n, c, h, w = x.size()
-        x = F.avg_pool2d(x, kernel_size=[h, w])
-        x = x.view(x.size()[0],-1)
-        x = self.final_linear(x).view(-1, 10) 
-        return x
+        x = F.relu(self.conv32_1(x))
+        x = F.relu(self.conv32_2(x))
+        x = self.bn32(x)
+        x = F.dropout(x, training=self.training)
+        x = F.relu(self.conv64_1(x))
+        x = F.relu(self.conv64_2(x))
+        x = F.max_pool2d(x, 2)
+        x = self.bn64(x)
+        x = F.dropout(x, training=self.training)
+        x = F.relu(self.conv128_1(x))
+        x = F.relu(self.conv128_2(x))
+        x = F.max_pool2d(x, 2)
+        x = self.bn128(x)
+
+        x = x.view(-1, 4608)
+        x = F.relu(self.fc1(x))
+        x = self.bnfc1(x)
+        x = F.dropout(x, training=self.training)
+        x = F.relu(self.fc2(x))
+        x = self.bnfc2(x)
+        x = F.dropout(x, training=self.training)
+        x = self.fc3(x)
+
+        return F.log_softmax(x, dim=1)
 
 
 def chooseModel(model_name='default', droprate=0.5, cuda=True):
@@ -406,6 +429,8 @@ def train(model, optimizer, train_loader, tensorboard_writer, callbacklist, epoc
     img = torchvision.utils.make_grid(255 - data.data, normalize=True, scale_each=True)
     tensorboard_writer.add_image('images', img, global_step=total_minibatch_count)
 
+
+
     return total_minibatch_count
 
 
@@ -452,6 +477,9 @@ def run_experiment(args):
     epochs_to_run = args.epochs
     tensorboard_writer, callbacklist, train_loader, test_loader = prepareDatasetAndLogging(args)
     model = chooseModel(args.model)
+    if args.load_model != "":
+        print("LOADING MODEL: " + args.load_model)
+        model.load_state_dict(torch.load(args.load_model))
     # tensorboard_writer.add_graph(model, images[:2])
     optimizer = chooseOptimizer(model, args.optimizer)
     # Run the primary training loop, starting with validation accuracy of 0
@@ -467,6 +495,8 @@ def run_experiment(args):
                        callbacklist, epoch, total_minibatch_count)
     callbacklist.on_train_end()
     tensorboard_writer.close()
+    if args.model_name == "P2Q13UltimateNet":
+        torch.save(model.state_dict(), './q13_save.model' + args.name )
 
     if args.dataset == 'fashion_mnist' and val_acc > 0.92 and val_acc <= 1.0:
         print("Congratulations, you beat the Question 13 minimum of 92 with ({:.2f}%) validation accuracy!".format(val_acc))

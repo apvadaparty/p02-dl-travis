@@ -1,10 +1,15 @@
 # deep-learning-jhu-cs-482-682
-#Fashion MNIST
+
 ## Eric Carlson, Alex Bocchieri, Annapurna Vadaparty
 
 # Answers
 
 1. Hyperparameter change: none yet, it is simply running both datasets with the given hyperparameters (10 epochs, 0.01 learning rate, sgd optimizer). 
+
+MNIST with 10 epochs: 
+![Alt text](q1/Screenshot%202018-03-05%2022.52.37.png?raw=true "Title")
+Fashion MNIST with 10 epochs: 
+![Alt text](relative/path/to/img.jpg?raw=true "Title")
 
 2. Hyperparameter change: doubling number of epochs; comparing 10 epoch runs of MNIST & Fashion with 20 epoch runs of MNIST & Fashion. 
 
@@ -14,7 +19,10 @@
 
 5. Hyperparameter change: a dropout layer is used, and the dropout rates (probability of a randomly selected weight being set to 0) tested are 0, 0.25, 0.5, 0.9, and 1. 0 means that no weights are set to 0, and 1 means all weights are set to 0. 
 
-6. Hyperparameter change: the batch sizes tested are 256, 32, and 2048.  
+6. Hyperparameter change: the batch sizes tested are 256, 32, and 2048.
+
+MNIST with 1/8 batch size: 
+![Alt text](q6/Screen%20Shot%202018-03-05%20at%2011.06.10%20PM.png?raw=true "Title")
 
 7. Hyperparameter change: the number of output channels from the convolution layer (and input to the first Linear layer) are modified. The number of output channels tested are 10, 5, and 20. 
 

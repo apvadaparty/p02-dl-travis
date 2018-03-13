@@ -44,4 +44,15 @@ python p02_fashion_mnist.py --dataset fashion_mnist --name q9_P2Q9DropoutNet --m
 python p02_fashion_mnist.py --dataset fashion_mnist --name q10_P2Q10DropoutBatchnormNet --model P2Q10DropoutBatchnormNet --data_dir ../data/q10
 
 #Question 11
-python p02_fashion_mnist.py --dataset fashion_mnist --name q11_extraconv --batch-size 256 --data_dir ../data/q11 --model P2Q11ExtraConvNet
+python p02_fashion_mnist.py --dataset fashion_mnist --name q11_extraconv --data_dir ../data/fashion_mnist --model P2Q11ExtraConvNet
+
+#Question 12
+python p02_fashion_mnist.py --dataset fashion_mnist --name q12_rmlayer --data_dir ../data/fashion_mnist --model P2Q12RemoveLayerNet
+
+#Question 13
+python p02_fashion_mnist.py --dataset fashion_mnist --name q13_ultimateNetgm --data_dir ../data/fashion_mnist --model P2Q13UltimateNet
+
+
+#Question 15
+python p02_fashion_mnist.py --dataset mnist --name q15_lr20x_mnist --data_dir ../data --model P2Q13UltimateNet --lr 0.0005
+
