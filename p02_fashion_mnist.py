@@ -39,6 +39,8 @@ parser.add_argument('--momentum', type=float, default=0.5, metavar='MO',
                     help='SGD momentum (default: 0.5)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
+parser.add_argument('--no-train', action='store_true', default=False,
+                    help='model only tests')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log_interval', type=int, default=100, metavar='I',
@@ -491,10 +493,11 @@ def run_experiment(args):
     for epoch in range(1, epochs_to_run + 1):
         callbacklist.on_epoch_begin(epoch)
         # train for 1 epoch
-        total_minibatch_count = train(model, optimizer, train_loader,
-                                      tensorboard_writer,
-                                      callbacklist, epoch,
-                                      total_minibatch_count)
+        if not args.no_train:
+            total_minibatch_count = train(model, optimizer, train_loader,
+                                          tensorboard_writer,
+                                          callbacklist, epoch,
+                                          total_minibatch_count)
         # validate progress on test dataset
         val_acc = test(model, test_loader, tensorboard_writer,
                        callbacklist, epoch, total_minibatch_count)

@@ -53,7 +53,7 @@ python p02_fashion_mnist.py --dataset fashion_mnist --name q12_rmlayer --data_di
 python p02_fashion_mnist.py --dataset fashion_mnist --name q13 --data_dir ../data/fashion_mnist --model P2Q13UltimateNet --batch-size 128 --epochs 10 --optimizer adam
 
 #Question 14
-python p02_fashion_mnist.py --dataset mnist --name q14 --data_dir ../data/mnist --load_model q13_save.modelq13 --model P2Q13UltimateNet --batch-size 128 --epochs 10 --optimizer adam
+python p02_fashion_mnist.py --dataset mnist --name q14 --data_dir ../data/mnist --load_model q13_save.modelq13 --model P2Q13UltimateNet --batch-size 128 --epochs 10 --optimizer adam --no-train
 
 # Question 15
-python p02_fashion_mnist.py --dataset mnist --name q15 --data_dir ../data/mnist --load_model q13_save.modelq13 --model P2Q13UltimateNet --batch-size 128 --epochs 10 --lr 0.0005
+python p02_fashion_mnist.py --dataset mnist --name q15 --data_dir ../data/mnist --load_model q13_save.modelq13 --model P2Q13UltimateNet --batch-size 128 --epochs 10 --optimizer adam
