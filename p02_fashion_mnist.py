@@ -21,7 +21,8 @@ from tensorboardX import SummaryWriter
 import callbacks
 
 # Training settings
-parser = argparse.ArgumentParser(description='Deep Learning JHU Assignment 1 - Fashion-MNIST')
+parser = argparse.ArgumentParser(description='Deep Learning JHU Assignment 1 \
+                                                            - Fashion-MNIST')
 parser.add_argument('--batch-size', type=int, default=256, metavar='B',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--dropout-rate', type=float, default=50, metavar='DR',
@@ -49,12 +50,14 @@ parser.add_argument('--data_dir', type=str, default='../data/', metavar='F',
                     help='Where to put data')
 parser.add_argument('--name', type=str, default='', metavar='N',
                     help="""A name for this training run, this
-                            affects the directory so use underscores and not spaces.""")
+                            affects the directory so use underscores and not\
+                                                                    spaces.""")
 parser.add_argument('--model', type=str, default='default', metavar='M',
                     help="""Options are default, P2Q7DefaultChannelsNet,
                     P2Q7HalfChannelsNet, P2Q7DoubleChannelsNet,
                     P2Q8BatchNormNet, P2Q9DropoutNet, P2Q10DropoutBatchnormNet,
-                    P2Q11ExtraConvNet, P2Q12RemoveLayerNet, and P2Q13UltimateNet.""")
+                    P2Q11ExtraConvNet, P2Q12RemoveLayerNet, \
+                    and P2Q13UltimateNet.""")
 parser.add_argument('--print_log', action='store_true', default=False,
                     help='prints the csv log when training is complete')
 
@@ -81,7 +84,8 @@ def prepareDatasetAndLogging(args):
     elif args.dataset == 'fashion_mnist':
         DatasetClass = datasets.FashionMNIST
     else:
-        raise ValueError('unknown dataset: ' + args.dataset + ' try mnist or fashion_mnist')
+        tail_string = ' try mnist or fashion_mnist'
+        raise ValueError('unknown dataset: ' + args.dataset + tail_string)
 
     training_run_name = timeStamped(args.dataset + '_' + args.name)
 
@@ -122,25 +126,25 @@ def prepareDatasetAndLogging(args):
     callbacklist = callbacks.CallbackList(
         [callbacks.BaseLogger(),
          callbacks.TQDMCallback(),
-         callbacks.CSVLogger(filename=training_run_dir + training_run_name + '.csv',
+         callbacks.CSVLogger(filename=training_run_dir +
+                             training_run_name + '.csv',
                              output_on_train_end=output_on_train_end)])
     callbacklist.set_params(callback_params)
 
-    tensorboard_writer = SummaryWriter(log_dir=training_run_dir, comment=args.dataset + '_embedding_training')
+    tensorboard_writer = SummaryWriter(log_dir=training_run_dir,
+                                       comment=args.dataset +
+                                       '_embedding_training')
 
     # show some image examples in tensorboard projector with inverted color
     images = 255 - test_dataset.test_data[:100].float()
     label = test_dataset.test_labels[:100]
     features = images.view(100, 784)
-    tensorboard_writer.add_embedding(features, metadata=label, label_img=images.unsqueeze(1))
+    tensorboard_writer.add_embedding(features, metadata=label,
+                                     label_img=images.unsqueeze(1))
     return tensorboard_writer, callbacklist, train_loader, test_loader
 
 
-# TODO Add classes for every option listed under the --model parser argument above.
-
 # Define the neural network classes
-
-
 class Net(nn.Module):
     def __init__(self, droprate=0.5):
         super(Net, self).__init__()
@@ -266,7 +270,7 @@ class P2Q11ExtraConvNet(nn.Module):
         self.conv1 = nn.Conv2d(1, 20, kernel_size=5)
         self.bn = nn.BatchNorm2d(20)
         self.conv2 = nn.Conv2d(20, 80, kernel_size=5)
-        self.conv3 = nn.Conv2d(80, 40, kernel_size=2)#only thing different
+        self.conv3 = nn.Conv2d(80, 40, kernel_size=2)
         self.fc1 = nn.Linear(40, 20)
         self.fc2 = nn.Linear(20, 10)
 
@@ -290,7 +294,6 @@ class P2Q12RemoveLayerNet(nn.Module):
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
         self.fc1 = nn.Linear(320, 10)
-        #removed fc2
 
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
@@ -306,13 +309,8 @@ class P2Q13UltimateNet(nn.Module):
         super(P2Q13UltimateNet, self).__init__()
         self.conv32_1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
         self.conv32_2 = nn.Conv2d(16, 16, kernel_size=3, padding=1)
-        #self.conv64_1 = nn.Conv2d(16, 16, kernel_size=3, padding=1)
         self.bn32 = nn.BatchNorm2d(16)
-        #self.conv64_2 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
-        #self.conv64_3 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
-        #self.bn64 = nn.BatchNorm2d(32)
         self.conv128_1 = nn.Conv2d(16, 16, kernel_size=5, padding=2)
-        #self.conv128_2 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
         self.bn128 = nn.BatchNorm2d(16)
         self.fc1 = nn.Linear(12544, 512)
         self.bnfc1 = nn.BatchNorm2d(512)
@@ -320,22 +318,13 @@ class P2Q13UltimateNet(nn.Module):
         self.bnfc2 = nn.BatchNorm2d(512)
         self.fc3 = nn.Linear(512, 10)
 
-
     def forward(self, x):
         x = F.relu(self.conv32_1(x))
         x = F.relu(self.conv32_2(x))
-        #x = F.relu(self.conv64_1(x))
         x = self.bn32(x)
         x = F.dropout(x, training=self.training)
 
-
-        #x = F.relu(self.conv64_2(x))
-        #x = F.max_pool2d(x, 2)
-        # x = self.bn64(x)
-        # x = F.dropout(x, training=self.training)
-
         x = F.relu(self.conv128_1(x))
-        #x = F.max_pool2d(x, 2)
         x = self.bn128(x)
         x = F.dropout(x, training=self.training)
 
@@ -367,7 +356,8 @@ def chooseModel(model_name='default', droprate=0.5, cuda=True):
 
 def chooseOptimizer(model, optimizer='sgd'):
     if optimizer == 'sgd':
-        optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+        optimizer = optim.SGD(model.parameters(), lr=args.lr,
+                              momentum=args.momentum)
     elif optimizer == 'adam':
         optimizer = optim.Adam(model.parameters())
     elif optimizer == 'rmsprop':
@@ -377,7 +367,8 @@ def chooseOptimizer(model, optimizer='sgd'):
     return optimizer
 
 
-def train(model, optimizer, train_loader, tensorboard_writer, callbacklist, epoch, total_minibatch_count):
+def train(model, optimizer, train_loader, tensorboard_writer, callbacklist,
+          epoch, tot_minb_c):
     # Training
     model.train()
     correct_count = np.array(0)
@@ -403,7 +394,8 @@ def train(model, optimizer, train_loader, tensorboard_writer, callbacklist, epoc
         # target labels and predictions are
         # categorical values from 0 to 9.
         accuracy = (target == argmax.squeeze()).float().mean()
-        pred = output.data.max(1, keepdim=True)[1]  # get the index of the max log-probability
+        # get the index of the max log-probability
+        pred = output.data.max(1, keepdim=True)[1]
         correct_count += pred.eq(target.data.view_as(pred)).cpu().sum()
 
         batch_logs = {
@@ -415,29 +407,34 @@ def train(model, optimizer, train_loader, tensorboard_writer, callbacklist, epoc
         batch_logs['batch'] = np.array(batch_idx)
         callbacklist.on_batch_end(batch_idx, batch_logs)
 
-        if args.log_interval != 0 and total_minibatch_count % args.log_interval == 0:
+        if args.log_interval != 0 and tot_minb_c % args.log_interval == 0:
             # put all the logs in tensorboard
             for name, value in six.iteritems(batch_logs):
-                tensorboard_writer.add_scalar(name, value, global_step=total_minibatch_count)
+                tensorboard_writer.add_scalar(name, value,
+                                              global_step=tot_minb_c)
 
             # put all the parameters in tensorboard histograms
             for name, param in model.named_parameters():
                 name = name.replace('.', '/')
-                tensorboard_writer.add_histogram(name, param.data.cpu().numpy(), global_step=total_minibatch_count)
-                tensorboard_writer.add_histogram(name + '/gradient', param.grad.data.cpu().numpy(), global_step=total_minibatch_count)
+                tensorboard_writer.add_histogram(name,
+                                                 param.data.cpu().numpy(),
+                                                 global_step=tot_minb_c)
+                tensorboard_writer.add_histogram(name + '/gradient',
+                                                 param.grad.data.cpu().numpy(),
+                                                 global_step=tot_minb_c)
 
-        total_minibatch_count += 1
+        tot_minb_c += 1
 
     # display the last batch of images in tensorboard
-    img = torchvision.utils.make_grid(255 - data.data, normalize=True, scale_each=True)
-    tensorboard_writer.add_image('images', img, global_step=total_minibatch_count)
+    img = torchvision.utils.make_grid(255 - data.data, normalize=True,
+                                      scale_each=True)
+    tensorboard_writer.add_image('images', img,
+                                 global_step=tot_minb_c)
+    return tot_minb_c
 
 
-
-    return total_minibatch_count
-
-
-def test(model, test_loader, tensorboard_writer, callbacklist, epoch, total_minibatch_count):
+def test(model, test_loader, tensorboard_writer, callbacklist, epoch,
+         total_minibatch_count):
     # Validation Testing
     model.eval()
     test_loss = 0
@@ -448,8 +445,8 @@ def test(model, test_loader, tensorboard_writer, callbacklist, epoch, total_mini
             data, target = data.cuda(), target.cuda()
         data, target = Variable(data, volatile=True), Variable(target)
         output = model(data)
-        test_loss += F.nll_loss(output, target, size_average=False).data[0]  # sum up batch loss
-        pred = output.data.max(1, keepdim=True)[1]  # get the index of the max log-probability
+        test_loss += F.nll_loss(output, target, size_average=False).data[0]
+        pred = output.data.max(1, keepdim=True)[1]
         correct += pred.eq(target.data.view_as(pred)).cpu().sum()
 
     test_size = np.array(len(test_loader.dataset), np.float32)
@@ -459,10 +456,12 @@ def test(model, test_loader, tensorboard_writer, callbacklist, epoch, total_mini
     epoch_logs = {'val_loss': np.array(test_loss),
                   'val_acc': np.array(acc)}
     for name, value in six.iteritems(epoch_logs):
-        tensorboard_writer.add_scalar(name, value, global_step=total_minibatch_count)
+        tensorboard_writer.add_scalar(name, value,
+                                      global_step=total_minibatch_count)
     callbacklist.on_epoch_end(epoch, epoch_logs)
     progress_bar.write(
-        'Epoch: {} - validation test results - Average val_loss: {:.4f}, val_acc: {}/{} ({:.2f}%)'.format(
+        'Epoch: {} - validation test results - Average val_loss: {:.4f}, \
+                                            val_acc: {}/{} ({:.2f}%)'.format(
             epoch, test_loss, correct, len(test_loader.dataset),
             100. * correct / len(test_loader.dataset)))
 
@@ -478,7 +477,8 @@ def run_experiment(args):
         torch.cuda.manual_seed(args.seed)
 
     epochs_to_run = args.epochs
-    tensorboard_writer, callbacklist, train_loader, test_loader = prepareDatasetAndLogging(args)
+    tensorboard_writer, callbacklist, train_loader, test_loader \
+        = prepareDatasetAndLogging(args)
     model = chooseModel(args.model)
     if args.load_model != "":
         print("LOADING MODEL: " + args.load_model)
@@ -491,18 +491,21 @@ def run_experiment(args):
     for epoch in range(1, epochs_to_run + 1):
         callbacklist.on_epoch_begin(epoch)
         # train for 1 epoch
-        total_minibatch_count = train(model, optimizer, train_loader, tensorboard_writer,
-                                      callbacklist, epoch, total_minibatch_count)
+        total_minibatch_count = train(model, optimizer, train_loader,
+                                      tensorboard_writer,
+                                      callbacklist, epoch,
+                                      total_minibatch_count)
         # validate progress on test dataset
         val_acc = test(model, test_loader, tensorboard_writer,
                        callbacklist, epoch, total_minibatch_count)
     callbacklist.on_train_end()
     tensorboard_writer.close()
-    if args.model_name == "P2Q13UltimateNet":
-        torch.save(model.state_dict(), './q13_save.model' + args.name )
+    if args.model == "P2Q13UltimateNet":
+        torch.save(model.state_dict(), './q13_save.model' + args.name)
 
     if args.dataset == 'fashion_mnist' and val_acc > 0.92 and val_acc <= 1.0:
-        print("Congratulations, you beat the Question 13 minimum of 92 with ({:.2f}%) validation accuracy!".format(val_acc))
+        print("Congratulations, you beat the Question 13 minimum of 92 with \
+                            ({:.2f}%) validation accuracy!".format(val_acc))
 
 if __name__ == '__main__':
     args = parser.parse_args()
