@@ -314,11 +314,11 @@ class P2Q13UltimateNet(nn.Module):
         self.conv128_1 = nn.Conv2d(16, 16, kernel_size=5, padding=2)
         #self.conv128_2 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
         self.bn128 = nn.BatchNorm2d(16)
-        self.fc1 = nn.Linear(12544, 128)
-        self.bnfc1 = nn.BatchNorm2d(128)
-        self.fc2 = nn.Linear(128, 64)
-        self.bnfc2 = nn.BatchNorm2d(64)
-        self.fc3 = nn.Linear(64, 10)
+        self.fc1 = nn.Linear(12544, 512)
+        self.bnfc1 = nn.BatchNorm2d(512)
+        self.fc2 = nn.Linear(512, 512)
+        self.bnfc2 = nn.BatchNorm2d(512)
+        self.fc3 = nn.Linear(512, 10)
 
 
     def forward(self, x):
